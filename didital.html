@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analytiq — Digital Analytics & SEO Toolkit</title>
+<meta name="description" content="Professional digital analytics dashboard and SEO optimization toolkit for modern businesses. Real-time insights, SEO audits, competitor analysis.">
+<meta name="keywords" content="analytics dashboard, SEO toolkit, competitor analysis, core web vitals, meta tag generator">
+<link rel="canonical" href="https://analytiq.io/">
+<meta property="og:title" content="Analytiq — Digital Analytics & SEO Toolkit">
+<meta property="og:description" content="Professional analytics and SEO toolkit for modern businesses.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Analytiq",
+  "applicationCategory": "BusinessApplication",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+}
+</script>
+
+<style>
+:root {
+  --bg: #080c14;
+  --bg2: #0d1424;
+  --bg3: #111928;
+  --surface: #161f30;
+  --surface2: #1c2840;
+  --border: #1e2d45;
+  --border2: #243450;
+  --text: #e8edf5;
+  --text2: #8a9bbf;
+  --text3: #4a5a78;
+  --indigo: #6366f1;
+  --indigo-dim: #3730a3;
+  --emerald: #10b981;
+  --emerald-dim: #065f46;
+  --amber: #f59e0b;
+  --rose: #f43f5e;
+  --cyan: #06b6d4;
+  --glow: rgba(99,102,241,0.15);
+  --glow-em: rgba(16,185,129,0.15);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --transition: 0.22s cubic-bezier(0.4,0,0.2,1);
+}
+[data-theme="light"] {
+  --bg: #f0f4fb;
+  --bg2: #e8eef9;
+  --bg3: #dde5f5;
+  --surface: #ffffff;
+  --surface2: #f5f7ff;
+  --border: #d0d9ee;
+  --border2: #b8c5e0;
+  --text: #0f172a;
+  --text2: #475569;
+  --text3: #94a3b8;
+  --glow: rgba(99,102,241,0.08);
+  --glow-em: rgba(16,185,129,0.08);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background var(--transition), color var(--transition);
+}
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* ── GRID BACKGROUND ── */
+.grid-bg {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.3;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 20%, black 40%, transparent 100%);
+}
+.noise {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem;
+  height: 60px;
+  background: rgba(8,12,20,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  transition: background var(--transition);
+}
+[data-theme="light"] nav { background: rgba(240,244,251,0.85); }
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--indigo), var(--emerald));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  text-decoration: none;
+}
+.nav-links { display: flex; align-items: center; gap: 0.25rem; }
+.nav-links a {
+  padding: 0.4rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text2);
+  text-decoration: none;
+  transition: all var(--transition);
+  cursor: pointer;
+}
+.nav-links a:hover, .nav-links a.active { color: var(--text); background: var(--surface); }
+.nav-right { display: flex; align-items: center; gap: 0.75rem; }
+.btn-theme {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text2); cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; transition: all var(--transition);
+}
+.btn-theme:hover { color: var(--text); border-color: var(--border2); }
+.btn-primary {
+  background: var(--indigo); color: white; border: none;
+  padding: 0.45rem 1.1rem; border-radius: 7px; font-size: 0.82rem; font-weight: 600;
+  cursor: pointer; transition: all var(--transition); font-family: var(--font-body);
+}
+.btn-primary:hover { background: #4f46e5; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(99,102,241,0.35); }
+
+/* ── SECTIONS ── */
+.section { display: none; padding-top: 60px; min-height: 100vh; position: relative; z-index: 1; }
+.section.active { display: block; }
+
+/* ── HOME ── */
+#home { display: none; }
+#home.active {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 60px 2rem 4rem;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--surface); border: 1px solid var(--border);
+  padding: 0.35rem 0.9rem; border-radius: 100px;
+  font-size: 0.75rem; font-weight: 500; color: var(--text2);
+  margin-bottom: 2rem;
+  animation: fadeUp 0.6s ease both;
+}
+.badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--emerald); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; box-shadow: 0 0 0 0 rgba(16,185,129,0.4); } 50% { box-shadow: 0 0 0 6px rgba(16,185,129,0); } }
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin-bottom: 1.25rem;
+  animation: fadeUp 0.6s 0.1s ease both;
+}
+.hero-title .gradient-text {
+  background: linear-gradient(135deg, var(--indigo) 0%, var(--cyan) 50%, var(--emerald) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.hero-sub {
+  max-width: 560px; color: var(--text2); font-size: 1.05rem; line-height: 1.7;
+  margin-bottom: 2.5rem;
+  animation: fadeUp 0.6s 0.2s ease both;
+}
+.hero-actions {
+  display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center;
+  animation: fadeUp 0.6s 0.3s ease both;
+}
+.btn-lg {
+  padding: 0.75rem 1.75rem; border-radius: 10px; font-size: 0.9rem; font-weight: 600;
+  cursor: pointer; transition: all var(--transition); font-family: var(--font-body);
+  text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;
+}
+.btn-indigo { background: var(--indigo); color: white; border: none; }
+.btn-indigo:hover { background: #4f46e5; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(99,102,241,0.4); }
+.btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--surface); color: var(--text); border-color: var(--border2); }
+
+.hero-stats {
+  display: flex; gap: 3rem; margin-top: 4rem; flex-wrap: wrap; justify-content: center;
+  animation: fadeUp 0.6s 0.4s ease both;
+}
+.stat-item { text-align: center; }
+.stat-num {
+  font-family: var(--font-display); font-size: 2rem; font-weight: 800;
+  background: linear-gradient(135deg, var(--indigo), var(--emerald));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.stat-label { font-size: 0.78rem; color: var(--text3); margin-top: 0.2rem; text-transform: uppercase; letter-spacing: 0.08em; }
+
+/* Feature cards */
+.features-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem; max-width: 1100px; width: 100%; margin: 5rem auto 0; padding: 0 1rem;
+  animation: fadeUp 0.6s 0.5s ease both;
+}
+.feature-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.5rem;
+  transition: all var(--transition); cursor: pointer;
+}
+.feature-card:hover { border-color: var(--indigo); transform: translateY(-3px); box-shadow: 0 12px 40px var(--glow); }
+.feature-icon {
+  width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center;
+  justify-content: center; font-size: 1.1rem; margin-bottom: 1rem;
+}
+.fi-indigo { background: rgba(99,102,241,0.15); color: var(--indigo); }
+.fi-emerald { background: rgba(16,185,129,0.15); color: var(--emerald); }
+.fi-amber { background: rgba(245,158,11,0.15); color: var(--amber); }
+.fi-rose { background: rgba(244,63,94,0.15); color: var(--rose); }
+.feature-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.4rem; }
+.feature-desc { font-size: 0.82rem; color: var(--text2); line-height: 1.6; }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── CONTAINER ── */
+.container { max-width: 1280px; margin: 0 auto; padding: 2rem; }
+.page-header { margin-bottom: 2rem; }
+.page-title {
+  font-family: var(--font-display); font-size: 1.6rem; font-weight: 800;
+  letter-spacing: -0.02em; margin-bottom: 0.3rem;
+}
+.page-sub { font-size: 0.85rem; color: var(--text2); }
+
+/* ── CARDS ── */
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.25rem;
+  transition: border-color var(--transition);
+}
+.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.card-title { font-size: 0.82rem; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; }
+.card-badge {
+  font-family: var(--font-mono); font-size: 0.7rem; padding: 0.2rem 0.55rem;
+  border-radius: 4px; font-weight: 500;
+}
+.badge-up { background: rgba(16,185,129,0.15); color: var(--emerald); }
+.badge-down { background: rgba(244,63,94,0.15); color: var(--rose); }
+.badge-neu { background: var(--surface2); color: var(--text2); }
+
+/* ── KPI GRID ── */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+.kpi-value {
+  font-family: var(--font-display); font-size: 2rem; font-weight: 800;
+  letter-spacing: -0.03em; margin-bottom: 0.2rem;
+}
+.kpi-change { font-size: 0.78rem; color: var(--text2); display: flex; align-items: center; gap: 0.3rem; }
+.change-pos { color: var(--emerald); }
+.change-neg { color: var(--rose); }
+
+/* ── CHARTS ── */
+.chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+@media (max-width: 768px) { .chart-grid { grid-template-columns: 1fr; } }
+.chart-wrap { position: relative; height: 220px; }
+
+/* ── TOOLBAR ── */
+.toolbar {
+  display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem;
+  padding: 0.75rem 1rem; background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.toolbar-label { font-size: 0.78rem; color: var(--text2); font-weight: 500; }
+.date-btn {
+  padding: 0.35rem 0.8rem; border-radius: 6px; font-size: 0.78rem; font-weight: 500;
+  background: transparent; border: 1px solid var(--border); color: var(--text2); cursor: pointer;
+  transition: all var(--transition); font-family: var(--font-body);
+}
+.date-btn.active, .date-btn:hover { background: var(--indigo); border-color: var(--indigo); color: white; }
+.spacer { flex: 1; }
+.icon-btn {
+  padding: 0.4rem 0.9rem; border-radius: 6px; font-size: 0.78rem; font-weight: 500;
+  background: var(--surface2); border: 1px solid var(--border); color: var(--text2);
+  cursor: pointer; transition: all var(--transition); display: flex; align-items: center;
+  gap: 0.4rem; font-family: var(--font-body);
+}
+.icon-btn:hover { color: var(--text); border-color: var(--border2); }
+
+/* ── SEO AUDIT ── */
+.audit-input-row { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; }
+.url-input {
+  flex: 1; background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 0.65rem 1rem; color: var(--text);
+  font-size: 0.88rem; font-family: var(--font-mono); outline: none;
+  transition: border-color var(--transition);
+}
+.url-input:focus { border-color: var(--indigo); }
+.btn-analyze {
+  padding: 0.65rem 1.4rem; background: var(--indigo); border: none; border-radius: var(--radius-sm);
+  color: white; font-weight: 600; font-size: 0.88rem; cursor: pointer;
+  transition: all var(--transition); font-family: var(--font-body);
+  white-space: nowrap;
+}
+.btn-analyze:hover { background: #4f46e5; box-shadow: 0 4px 20px rgba(99,102,241,0.35); }
+.btn-analyze:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.score-ring-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+.score-ring { position: relative; width: 120px; height: 120px; }
+.score-ring svg { transform: rotate(-90deg); }
+.score-ring-bg { fill: none; stroke: var(--border); stroke-width: 8; }
+.score-ring-fill { fill: none; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1); }
+.score-label {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+}
+.score-num { font-family: var(--font-display); font-size: 1.8rem; font-weight: 800; }
+.score-text { font-size: 0.65rem; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; }
+
+.audit-scores { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+.score-card { text-align: center; padding: 1rem; background: var(--surface2); border-radius: var(--radius-sm); }
+.score-card-val { font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; margin-bottom: 0.25rem; }
+.score-card-lbl { font-size: 0.72rem; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; }
+.color-good { color: var(--emerald); }
+.color-warn { color: var(--amber); }
+.color-bad { color: var(--rose); }
+
+.checklist { display: flex; flex-direction: column; gap: 0.5rem; }
+.check-item {
+  display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem;
+  background: var(--surface2); border-radius: var(--radius-sm);
+  font-size: 0.83rem; border-left: 3px solid transparent;
+  transition: all var(--transition);
+}
+.check-item.pass { border-left-color: var(--emerald); }
+.check-item.fail { border-left-color: var(--rose); }
+.check-item.warn { border-left-color: var(--amber); }
+.check-icon { font-size: 0.9rem; flex-shrink: 0; }
+.check-title { font-weight: 500; flex: 1; }
+.check-val { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text2); }
+
+/* ── TABS ── */
+.tabs { display: flex; gap: 0.25rem; margin-bottom: 1.5rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.3rem; width: fit-content; }
+.tab {
+  padding: 0.45rem 1rem; border-radius: 6px; font-size: 0.82rem; font-weight: 500;
+  cursor: pointer; color: var(--text2); transition: all var(--transition); border: none;
+  background: transparent; font-family: var(--font-body);
+}
+.tab.active { background: var(--indigo); color: white; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ── COMPETITOR ── */
+.comp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media (max-width: 640px) { .comp-grid { grid-template-columns: 1fr; } }
+.comp-header { font-family: var(--font-display); font-size: 1rem; font-weight: 700; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); }
+.metric-row { display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0; border-bottom: 1px solid var(--border); }
+.metric-row:last-child { border-bottom: none; }
+.metric-name { font-size: 0.8rem; color: var(--text2); }
+.metric-val { font-family: var(--font-mono); font-size: 0.85rem; font-weight: 500; }
+.progress-bar { height: 4px; background: var(--border); border-radius: 2px; margin-top: 0.3rem; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 2px; transition: width 1s ease; }
+
+/* ── GENERATORS ── */
+.gen-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media (max-width: 768px) { .gen-grid { grid-template-columns: 1fr; } }
+.form-group { margin-bottom: 1rem; }
+.form-label { font-size: 0.78rem; font-weight: 600; color: var(--text2); margin-bottom: 0.4rem; display: block; text-transform: uppercase; letter-spacing: 0.04em; }
+.form-input, .form-select, .form-textarea {
+  width: 100%; background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 0.6rem 0.9rem; color: var(--text);
+  font-size: 0.85rem; font-family: var(--font-body); outline: none;
+  transition: border-color var(--transition);
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--indigo); }
+.form-textarea { resize: vertical; min-height: 100px; font-family: var(--font-mono); font-size: 0.8rem; }
+.form-select option { background: var(--bg); }
+.code-output {
+  background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 1rem; font-family: var(--font-mono); font-size: 0.78rem; color: var(--emerald);
+  white-space: pre-wrap; word-break: break-all; min-height: 100px; position: relative;
+  line-height: 1.6;
+}
+.copy-btn {
+  position: absolute; top: 0.5rem; right: 0.5rem; padding: 0.3rem 0.7rem;
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 5px;
+  font-size: 0.72rem; cursor: pointer; color: var(--text2); transition: all var(--transition);
+  font-family: var(--font-body);
+}
+.copy-btn:hover { color: var(--text); border-color: var(--border2); }
+.copy-btn.copied { color: var(--emerald); border-color: var(--emerald); }
+
+/* ── REPORTS ── */
+.report-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+.report-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem;
+  transition: all var(--transition);
+}
+.report-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+.report-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+.report-title { font-weight: 600; font-size: 0.9rem; }
+.report-desc { font-size: 0.8rem; color: var(--text2); line-height: 1.5; }
+.report-meta { font-size: 0.72rem; color: var(--text3); display: flex; align-items: center; gap: 0.5rem; }
+.report-actions { display: flex; gap: 0.5rem; margin-top: auto; }
+.btn-sm {
+  padding: 0.35rem 0.8rem; border-radius: 6px; font-size: 0.78rem; font-weight: 500;
+  cursor: pointer; transition: all var(--transition); border: 1px solid var(--border);
+  color: var(--text2); background: var(--surface2); font-family: var(--font-body);
+}
+.btn-sm:hover { color: var(--text); border-color: var(--border2); }
+.btn-sm.primary { background: var(--indigo); border-color: var(--indigo); color: white; }
+.btn-sm.primary:hover { background: #4f46e5; }
+
+/* ── PRICING ── */
+.pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; max-width: 900px; }
+.pricing-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.75rem; position: relative; transition: all var(--transition);
+}
+.pricing-card.featured { border-color: var(--indigo); box-shadow: 0 0 0 1px var(--indigo), 0 20px 60px var(--glow); }
+.pricing-card:hover { transform: translateY(-3px); }
+.pricing-badge {
+  position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+  background: var(--indigo); color: white; font-size: 0.7rem; font-weight: 700;
+  padding: 0.25rem 0.8rem; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+.pricing-name { font-family: var(--font-display); font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+.pricing-price { font-family: var(--font-display); font-size: 2.5rem; font-weight: 800; letter-spacing: -0.04em; margin-bottom: 0.25rem; }
+.pricing-price span { font-size: 0.9rem; font-weight: 400; color: var(--text2); }
+.pricing-desc { font-size: 0.8rem; color: var(--text2); margin-bottom: 1.5rem; }
+.pricing-features { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.5rem; }
+.pricing-features li { font-size: 0.83rem; display: flex; align-items: center; gap: 0.5rem; }
+.pricing-features li::before { content: "✓"; color: var(--emerald); font-weight: 700; flex-shrink: 0; }
+.pricing-features li.no { color: var(--text3); }
+.pricing-features li.no::before { content: "×"; color: var(--text3); }
+
+/* ── CONTACT ── */
+.contact-grid { display: grid; grid-template-columns: 1fr 1.6fr; gap: 2rem; }
+@media (max-width: 768px) { .contact-grid { grid-template-columns: 1fr; } }
+.contact-info { display: flex; flex-direction: column; gap: 1.5rem; }
+.contact-item { display: flex; gap: 1rem; align-items: flex-start; }
+.contact-icon {
+  width: 40px; height: 40px; border-radius: 9px; background: var(--surface2);
+  border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; flex-shrink: 0;
+}
+.contact-label { font-size: 0.75rem; color: var(--text2); margin-bottom: 0.15rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.contact-val { font-size: 0.9rem; font-weight: 500; }
+
+/* ── LOADING ── */
+.loader { display: none; flex-direction: column; align-items: center; gap: 1rem; padding: 2rem; }
+.loader.active { display: flex; }
+.spinner {
+  width: 36px; height: 36px; border: 3px solid var(--border);
+  border-top-color: var(--indigo); border-radius: 50%; animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loader-text { font-size: 0.82rem; color: var(--text2); font-family: var(--font-mono); }
+
+/* ── AUDIT RESULT ── */
+.audit-result { display: none; }
+.audit-result.active { display: block; }
+.audit-overview { display: grid; grid-template-columns: auto 1fr; gap: 2rem; align-items: center; margin-bottom: 1.5rem; padding: 1.5rem; background: var(--surface2); border-radius: var(--radius); }
+@media (max-width: 640px) { .audit-overview { grid-template-columns: 1fr; } }
+
+/* ── KEYWORD DENSITY ── */
+.kw-table { width: 100%; border-collapse: collapse; }
+.kw-table th, .kw-table td { padding: 0.55rem 0.75rem; text-align: left; font-size: 0.8rem; border-bottom: 1px solid var(--border); }
+.kw-table th { font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.72rem; }
+.kw-bar { display: flex; align-items: center; gap: 0.5rem; }
+.kw-bar-inner { height: 4px; border-radius: 2px; background: var(--indigo); }
+
+/* ── TABLE ── */
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th, .data-table td { padding: 0.65rem 0.9rem; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.82rem; }
+.data-table th { color: var(--text2); font-weight: 600; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: var(--surface2); }
+
+/* ── DRAG ZONE ── */
+.drag-zone {
+  border: 2px dashed var(--border); border-radius: var(--radius); padding: 2rem;
+  text-align: center; cursor: pointer; transition: all var(--transition);
+  color: var(--text2); font-size: 0.85rem;
+}
+.drag-zone:hover, .drag-zone.drag-over { border-color: var(--indigo); color: var(--indigo); background: var(--glow); }
+.drag-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+
+/* ── MOBILE ── */
+.hamburger { display: none; background: none; border: none; color: var(--text); cursor: pointer; font-size: 1.2rem; padding: 0.25rem; }
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hamburger { display: block; }
+  .kpi-grid { grid-template-columns: 1fr 1fr; }
+  .gen-grid { grid-template-columns: 1fr; }
+  .hero-stats { gap: 2rem; }
+  .features-grid { grid-template-columns: 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .contact-grid { grid-template-columns: 1fr; }
+}
+
+/* ── FOOTER STRIP ── */
+.footer-strip {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--bg2); border-top: 1px solid var(--border);
+  padding: 0.4rem 2rem; display: flex; align-items: center; justify-content: space-between;
+  font-size: 0.72rem; color: var(--text3); z-index: 50;
+}
+.status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--emerald); display: inline-block; margin-right: 0.4rem; }
+
+/* ── TOOLTIP ── */
+[data-tooltip] { position: relative; }
+[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+  background: var(--text); color: var(--bg); font-size: 0.7rem; padding: 0.3rem 0.6rem;
+  border-radius: 5px; white-space: nowrap; pointer-events: none; z-index: 200;
+}
+
+/* ── NOTIFICATION ── */
+.notif {
+  position: fixed; top: 70px; right: 1.5rem; z-index: 500;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem; font-size: 0.82rem; display: flex; align-items: center; gap: 0.6rem;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3); transform: translateX(120%);
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+.notif.show { transform: translateX(0); }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="noise"></div>
+
+<nav>
+  <a class="nav-logo" href="#" onclick="showSection('home')">⬡ Analytiq</a>
+  <div class="nav-links" id="navLinks">
+    <a onclick="showSection('home')" class="active" id="nav-home">Home</a>
+    <a onclick="showSection('dashboard')" id="nav-dashboard">Dashboard</a>
+    <a onclick="showSection('seo')" id="nav-seo">SEO Audit</a>
+    <a onclick="showSection('competitor')" id="nav-competitor">Competitor</a>
+    <a onclick="showSection('tools')" id="nav-tools">Tools</a>
+    <a onclick="showSection('reports')" id="nav-reports">Reports</a>
+    <a onclick="showSection('pricing')" id="nav-pricing">Pricing</a>
+    <a onclick="showSection('contact')" id="nav-contact">Contact</a>
+  </div>
+  <div class="nav-right">
+    <button class="btn-theme" onclick="toggleTheme()" id="themeBtn" data-tooltip="Toggle theme">🌙</button>
+    <button class="btn-primary" onclick="showSection('dashboard')">Open Dashboard →</button>
+    <button class="hamburger" onclick="toggleMobileNav()">☰</button>
+  </div>
+</nav>
+
+<div id="notif" class="notif">
+  <span id="notifIcon">✓</span>
+  <span id="notifText">Copied to clipboard!</span>
+</div>
+
+<!-- ══════════════ HOME ══════════════ -->
+<section id="home" class="section active">
+  <div class="hero-badge"><span class="badge-dot"></span> Now with AI-powered insights</div>
+  <h1 class="hero-title">Analytics that<br><span class="gradient-text">actually move</span><br>the needle</h1>
+  <p class="hero-sub">Complete digital analytics dashboard and SEO toolkit. Track performance, audit your site, and outpace competitors — all in one place.</p>
+  <div class="hero-actions">
+    <button class="btn-lg btn-indigo" onclick="showSection('dashboard')">Open Dashboard ↗</button>
+    <button class="btn-lg btn-ghost" onclick="showSection('seo')">Run SEO Audit</button>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-item"><div class="stat-num" id="stat1">0</div><div class="stat-label">Sites Analyzed</div></div>
+    <div class="stat-item"><div class="stat-num" id="stat2">0</div><div class="stat-label">SEO Issues Fixed</div></div>
+    <div class="stat-item"><div class="stat-num" id="stat3">0</div><div class="stat-label">Reports Generated</div></div>
+    <div class="stat-item"><div class="stat-num" id="stat4">0</div><div class="stat-label">Avg Score Boost</div></div>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card" onclick="showSection('dashboard')">
+      <div class="feature-icon fi-indigo">📊</div>
+      <div class="feature-title">Live Analytics Dashboard</div>
+      <div class="feature-desc">Real-time traffic, conversions, and revenue charts with CSV import and export capabilities.</div>
+    </div>
+    <div class="feature-card" onclick="showSection('seo')">
+      <div class="feature-icon fi-emerald">🔍</div>
+      <div class="feature-title">SEO Audit Tool</div>
+      <div class="feature-desc">Lighthouse-style scoring for any URL. Meta tags, speed, mobile-friendliness, and keyword density.</div>
+    </div>
+    <div class="feature-card" onclick="showSection('competitor')">
+      <div class="feature-icon fi-amber">⚔️</div>
+      <div class="feature-title">Competitor Analysis</div>
+      <div class="feature-desc">Side-by-side domain comparison with DA estimation, backlink analysis, and traffic insights.</div>
+    </div>
+    <div class="feature-card" onclick="showSection('tools')">
+      <div class="feature-icon fi-rose">🛠</div>
+      <div class="feature-title">SEO Toolkit</div>
+      <div class="feature-desc">Meta tag generator, sitemap builder, robots.txt editor, schema markup, and Core Web Vitals.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ DASHBOARD ══════════════ -->
+<section id="dashboard" class="section">
+  <div class="container">
+    <div class="page-header">
+      <h1 class="page-title">Analytics Dashboard</h1>
+      <p class="page-sub">Real-time performance overview · Last updated just now</p>
+    </div>
+
+    <div class="toolbar">
+      <span class="toolbar-label">Range:</span>
+      <button class="date-btn active" onclick="setRange(this,'7d')">7D</button>
+      <button class="date-btn" onclick="setRange(this,'30d')">30D</button>
+      <button class="date-btn" onclick="setRange(this,'90d')">90D</button>
+      <button class="date-btn" onclick="setRange(this,'1y')">1Y</button>
+      <div class="spacer"></div>
+      <div class="drag-zone" id="csvDrop" style="padding:0.35rem 0.9rem; border-width:1px; border-radius:6px; font-size:0.78rem;" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">📂 Drop CSV</div>
+      <button class="icon-btn" onclick="exportCSV()">⬇ CSV</button>
+      <button class="icon-btn" onclick="exportPDF()">⬇ PDF</button>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Total Visitors</span><span class="card-badge badge-up" id="kpi1-badge">+12.4%</span></div>
+        <div class="kpi-value" id="kpi1">0</div>
+        <div class="kpi-change">vs prev period <span class="change-pos">↑ 4,201</span></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Conversions</span><span class="card-badge badge-up" id="kpi2-badge">+8.1%</span></div>
+        <div class="kpi-value" id="kpi2">0</div>
+        <div class="kpi-change">vs prev period <span class="change-pos">↑ 312</span></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Bounce Rate</span><span class="card-badge badge-down" id="kpi3-badge">-3.2%</span></div>
+        <div class="kpi-value" id="kpi3">0%</div>
+        <div class="kpi-change">vs prev period <span class="change-neg">↑ 1.4pp</span></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Revenue</span><span class="card-badge badge-up" id="kpi4-badge">+21.7%</span></div>
+        <div class="kpi-value" id="kpi4">$0</div>
+        <div class="kpi-change">vs prev period <span class="change-pos">↑ $8,942</span></div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Traffic Over Time</span><span class="card-badge badge-neu">Sessions</span></div>
+        <div class="chart-wrap"><canvas id="trafficChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Conversion Funnel</span><span class="card-badge badge-neu">This period</span></div>
+        <div class="chart-wrap"><canvas id="funnelChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Traffic Sources</span><span class="card-badge badge-neu">Breakdown</span></div>
+        <div class="chart-wrap"><canvas id="sourceChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Revenue Trend</span><span class="card-badge badge-up">↑ Growing</span></div>
+        <div class="chart-wrap"><canvas id="revenueChart"></canvas></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="card-title">Top Pages</span><span class="card-badge badge-neu">By Sessions</span></div>
+      <table class="data-table">
+        <thead><tr><th>Page</th><th>Sessions</th><th>Bounce</th><th>Avg. Time</th><th>Conversions</th></tr></thead>
+        <tbody id="pagesTable"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ SEO AUDIT ══════════════ -->
+<section id="seo" class="section">
+  <div class="container">
+    <div class="page-header">
+      <h1 class="page-title">SEO Audit Tool</h1>
+      <p class="page-sub">Lighthouse-style analysis · Meta, Speed, Mobile, Keywords</p>
+    </div>
+
+    <div class="audit-input-row">
+      <input type="url" class="url-input" id="auditUrl" placeholder="https://example.com" value="https://example.com">
+      <button class="btn-analyze" onclick="runAudit()" id="auditBtn">🔍 Analyze</button>
+    </div>
+
+    <div class="loader" id="auditLoader">
+      <div class="spinner"></div>
+      <span class="loader-text">Crawling page structure...</span>
+    </div>
+
+    <div class="audit-result" id="auditResult">
+      <div class="audit-overview">
+        <div class="score-ring-wrap">
+          <div class="score-ring">
+            <svg viewBox="0 0 120 120" width="120" height="120">
+              <circle class="score-ring-bg" cx="60" cy="60" r="52"/>
+              <circle class="score-ring-fill" id="ringFill" cx="60" cy="60" r="52" stroke="#6366f1" stroke-dasharray="326.7" stroke-dashoffset="326.7"/>
+            </svg>
+            <div class="score-label">
+              <span class="score-num" id="overallScore">0</span>
+              <span class="score-text">Overall</span>
+            </div>
+          </div>
+          <span style="font-size:0.75rem;color:var(--text2);">SEO Score</span>
+        </div>
+        <div>
+          <div class="audit-scores" id="auditScores"></div>
+          <p style="font-size:0.8rem;color:var(--text2);line-height:1.6;" id="auditSummary"></p>
+        </div>
+      </div>
+
+      <div class="tabs" style="margin-bottom:1rem;">
+        <button class="tab active" onclick="switchAuditTab(this,'tab-checks')">Checklist</button>
+        <button class="tab" onclick="switchAuditTab(this,'tab-keywords')">Keywords</button>
+        <button class="tab" onclick="switchAuditTab(this,'tab-meta')">Meta Preview</button>
+      </div>
+
+      <div class="tab-content active" id="tab-checks">
+        <div class="checklist" id="auditChecklist"></div>
+      </div>
+      <div class="tab-content" id="tab-keywords">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Keyword Density Analysis</span></div>
+          <table class="kw-table" id="kwTable">
+            <thead><tr><th>Keyword</th><th>Count</th><th>Density</th><th>Distribution</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="tab-content" id="tab-meta">
+        <div class="card">
+          <div class="card-header"><span class="card-title">SERP Preview</span></div>
+          <div style="background:var(--bg);border-radius:8px;padding:1.25rem;max-width:600px;">
+            <div style="font-size:0.7rem;color:var(--text3);margin-bottom:0.25rem;" id="serpUrl"></div>
+            <div style="font-size:1rem;color:#4f9ffe;font-weight:500;margin-bottom:0.25rem;cursor:pointer;" id="serpTitle"></div>
+            <div style="font-size:0.82rem;color:var(--text2);line-height:1.5;" id="serpDesc"></div>
+          </div>
+          <br>
+          <div style="display:flex;flex-direction:column;gap:0.5rem;max-width:600px;" id="metaDetails"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ COMPETITOR ══════════════ -->
+<section id="competitor" class="section">
+  <div class="container">
+    <div class="page-header">
+      <h1 class="page-title">Competitor Analysis</h1>
+      <p class="page-sub">Side-by-side domain comparison · DA, backlinks, traffic estimation</p>
+    </div>
+
+    <div class="toolbar" style="margin-bottom:1.5rem;">
+      <input type="text" class="form-input" id="domain1" placeholder="yourdomain.com" value="analytiq.io" style="max-width:240px;background:var(--bg2);">
+      <span style="color:var(--text3);font-size:0.8rem;">vs</span>
+      <input type="text" class="form-input" id="domain2" placeholder="competitor.com" value="semrush.com" style="max-width:240px;background:var(--bg2);">
+      <button class="btn-analyze" onclick="compareCompetitors()" style="padding:0.5rem 1.2rem;">Compare →</button>
+    </div>
+
+    <div class="comp-grid" id="compResults" style="display:none;">
+      <div class="card" id="compCard1"></div>
+      <div class="card" id="compCard2"></div>
+    </div>
+
+    <div id="compChartWrap" class="card" style="display:none;margin-top:1rem;">
+      <div class="card-header"><span class="card-title">Metric Comparison</span></div>
+      <div class="chart-wrap"><canvas id="compChart"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ TOOLS ══════════════ -->
+<section id="tools" class="section">
+  <div class="container">
+    <div class="page-header">
+      <h1 class="page-title">SEO Toolkit</h1>
+      <p class="page-sub">Meta generators, sitemaps, schema markup, Core Web Vitals</p>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="switchToolTab(this,'tool-meta')">Meta Tags</button>
+      <button class="tab" onclick="switchToolTab(this,'tool-schema')">Schema</button>
+      <button class="tab" onclick="switchToolTab(this,'tool-sitemap')">Sitemap</button>
+      <button class="tab" onclick="switchToolTab(this,'tool-robots')">Robots.txt</button>
+      <button class="tab" onclick="switchToolTab(this,'tool-cwv')">Core Web Vitals</button>
+    </div>
+
+    <!-- Meta Tags -->
+    <div class="tab-content active" id="tool-meta">
+      <div class="gen-grid">
+        <div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Meta Tag Generator</span></div>
+            <div class="form-group"><label class="form-label">Page Title</label><input class="form-input" id="mtTitle" placeholder="My Awesome Page" oninput="generateMeta()"></div>
+            <div class="form-group"><label class="form-label">Description (150-160 chars)</label><textarea class="form-textarea" id="mtDesc" placeholder="Describe this page..." oninput="generateMeta()" style="min-height:80px;"></textarea>
+              <div style="font-size:0.7rem;color:var(--text3);margin-top:0.3rem;font-family:var(--font-mono);" id="descCount">0 / 160 chars</div>
+            </div>
+            <div class="form-group"><label class="form-label">Keywords (comma-separated)</label><input class="form-input" id="mtKeywords" placeholder="analytics, seo, dashboard" oninput="generateMeta()"></div>
+            <div class="form-group"><label class="form-label">Canonical URL</label><input class="form-input" id="mtCanonical" placeholder="https://example.com/page" oninput="generateMeta()"></div>
+            <div class="form-group"><label class="form-label">OG Image URL</label><input class="form-input" id="mtOgImage" placeholder="https://example.com/og.jpg" oninput="generateMeta()"></div>
+            <div class="form-group"><label class="form-label">Robots</label>
+              <select class="form-select" id="mtRobots" onchange="generateMeta()">
+                <option value="index, follow">index, follow</option>
+                <option value="noindex, follow">noindex, follow</option>
+                <option value="index, nofollow">index, nofollow</option>
+                <option value="noindex, nofollow">noindex, nofollow</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="card" style="position:sticky;top:70px;">
+            <div class="card-header"><span class="card-title">Generated Code</span></div>
+            <div style="position:relative;">
+              <div class="code-output" id="metaOutput"><!-- Fill in the form to generate meta tags --></div>
+              <button class="copy-btn" onclick="copyOutput('metaOutput',this)">Copy</button>
+            </div>
+            <br>
+            <div style="font-size:0.75rem;color:var(--text2);font-family:var(--font-mono);padding:0.75rem;background:var(--bg);border-radius:6px;" id="metaPreview"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Schema -->
+    <div class="tab-content" id="tool-schema">
+      <div class="gen-grid">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Schema Markup Generator</span></div>
+          <div class="form-group"><label class="form-label">Schema Type</label>
+            <select class="form-select" id="schemaType" onchange="generateSchema()">
+              <option value="Organization">Organization</option>
+              <option value="Article">Article</option>
+              <option value="Product">Product</option>
+              <option value="LocalBusiness">LocalBusiness</option>
+              <option value="FAQPage">FAQPage</option>
+              <option value="BreadcrumbList">BreadcrumbList</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Name</label><input class="form-input" id="schemaName" placeholder="My Business" oninput="generateSchema()"></div>
+          <div class="form-group"><label class="form-label">URL</label><input class="form-input" id="schemaUrl" placeholder="https://example.com" oninput="generateSchema()"></div>
+          <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="schemaDesc" placeholder="Description..." oninput="generateSchema()" style="min-height:70px;"></textarea></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">JSON-LD Output</span></div>
+          <div style="position:relative;">
+            <div class="code-output" id="schemaOutput"><!-- Select type and fill fields --></div>
+            <button class="copy-btn" onclick="copyOutput('schemaOutput',this)">Copy</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sitemap -->
+    <div class="tab-content" id="tool-sitemap">
+      <div class="gen-grid">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Sitemap Generator</span></div>
+          <div class="form-group"><label class="form-label">Base Domain</label><input class="form-input" id="sitemapDomain" placeholder="https://example.com" value="https://example.com" oninput="generateSitemap()"></div>
+          <div class="form-group"><label class="form-label">Pages (one per line)</label>
+            <textarea class="form-textarea" id="sitemapPages" oninput="generateSitemap()" style="min-height:140px;">/
+/about
+/blog
+/contact
+/pricing
+/features</textarea>
+          </div>
+          <div class="form-group"><label class="form-label">Change Frequency</label>
+            <select class="form-select" id="sitemapFreq" onchange="generateSitemap()">
+              <option value="weekly">weekly</option>
+              <option value="daily">daily</option>
+              <option value="monthly">monthly</option>
+              <option value="always">always</option>
+            </select>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">sitemap.xml</span></div>
+          <div style="position:relative;">
+            <div class="code-output" id="sitemapOutput" style="color:var(--cyan);"></div>
+            <button class="copy-btn" onclick="copyOutput('sitemapOutput',this)">Copy</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Robots -->
+    <div class="tab-content" id="tool-robots">
+      <div class="gen-grid">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Robots.txt Generator</span></div>
+          <div class="form-group"><label class="form-label">User Agent</label>
+            <select class="form-select" id="robotsAgent" onchange="generateRobots()">
+              <option value="*">All (* )</option>
+              <option value="Googlebot">Googlebot</option>
+              <option value="Bingbot">Bingbot</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Disallow paths (one per line)</label>
+            <textarea class="form-textarea" id="robotsDisallow" oninput="generateRobots()" style="min-height:100px;">/admin
+/private
+/tmp
+/*.pdf$</textarea>
+          </div>
+          <div class="form-group"><label class="form-label">Sitemap URL</label><input class="form-input" id="robotsSitemap" value="https://example.com/sitemap.xml" oninput="generateRobots()"></div>
+          <div class="form-group" style="display:flex;gap:1rem;align-items:center;">
+            <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.83rem;cursor:pointer;">
+              <input type="checkbox" id="robotsCrawlDelay" onchange="generateRobots()" style="accent-color:var(--indigo);"> Crawl-delay: 1
+            </label>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">robots.txt</span></div>
+          <div style="position:relative;">
+            <div class="code-output" id="robotsOutput" style="color:var(--amber);"></div>
+            <button class="copy-btn" onclick="copyOutput('robotsOutput',this)">Copy</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Core Web Vitals -->
+    <div class="tab-content" id="tool-cwv">
+      <div class="card" style="margin-bottom:1rem;">
+        <div class="card-header"><span class="card-title">Core Web Vitals Simulator</span></div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.25rem;">
+          <div>
+            <div style="font-size:0.78rem;color:var(--text2);margin-bottom:0.5rem;font-weight:600;">LCP — Largest Contentful Paint</div>
+            <input type="range" min="0.5" max="6" step="0.1" value="2.1" id="lcpSlider" oninput="updateCWV()" style="width:100%;accent-color:var(--indigo);">
+            <div style="display:flex;justify-content:space-between;margin-top:0.25rem;">
+              <span style="font-family:var(--font-mono);font-size:0.85rem;" id="lcpVal">2.1s</span>
+              <span style="font-size:0.72rem;" id="lcpStatus"></span>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:0.78rem;color:var(--text2);margin-bottom:0.5rem;font-weight:600;">FID — First Input Delay</div>
+            <input type="range" min="0" max="400" step="5" value="80" id="fidSlider" oninput="updateCWV()" style="width:100%;accent-color:var(--indigo);">
+            <div style="display:flex;justify-content:space-between;margin-top:0.25rem;">
+              <span style="font-family:var(--font-mono);font-size:0.85rem;" id="fidVal">80ms</span>
+              <span style="font-size:0.72rem;" id="fidStatus"></span>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:0.78rem;color:var(--text2);margin-bottom:0.5rem;font-weight:600;">CLS — Cumulative Layout Shift</div>
+            <input type="range" min="0" max="0.5" step="0.01" value="0.08" id="clsSlider" oninput="updateCWV()" style="width:100%;accent-color:var(--indigo);">
+            <div style="display:flex;justify-content:space-between;margin-top:0.25rem;">
+              <span style="font-family:var(--font-mono);font-size:0.85rem;" id="clsVal">0.08</span>
+              <span style="font-size:0.72rem;" id="clsStatus"></span>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:0.78rem;color:var(--text2);margin-bottom:0.5rem;font-weight:600;">TTFB — Time to First Byte</div>
+            <input type="range" min="50" max="1000" step="10" value="200" id="ttfbSlider" oninput="updateCWV()" style="width:100%;accent-color:var(--indigo);">
+            <div style="display:flex;justify-content:space-between;margin-top:0.25rem;">
+              <span style="font-family:var(--font-mono);font-size:0.85rem;" id="ttfbVal">200ms</span>
+              <span style="font-size:0.72rem;" id="ttfbStatus"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Performance Score</span></div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1rem;" id="cwvScores"></div>
+        <div style="margin-top:1rem;padding:0.85rem;background:var(--bg);border-radius:8px;font-size:0.82rem;line-height:1.6;font-family:var(--font-mono);" id="cwvRecommendations"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ REPORTS ══════════════ -->
+<section id="reports" class="section">
+  <div class="container">
+    <div class="page-header">
+      <h1 class="page-title">Reports</h1>
+      <p class="page-sub">Pre-built analytics reports ready to download or share</p>
+    </div>
+    <div class="report-grid" id="reportGrid"></div>
+  </div>
+</section>
+
+<!-- ══════════════ PRICING ══════════════ -->
+<section id="pricing" class="section">
+  <div class="container">
+    <div class="page-header" style="text-align:center;margin-bottom:3rem;">
+      <h1 class="page-title" style="font-size:2.2rem;">Simple, transparent pricing</h1>
+      <p class="page-sub">No hidden fees. Cancel anytime.</p>
+    </div>
+    <div class="pricing-grid" style="margin:0 auto;">
+      <div class="pricing-card">
+        <div class="pricing-name">Starter</div>
+        <div class="pricing-price">$0<span>/mo</span></div>
+        <div class="pricing-desc">Perfect for individuals and small projects.</div>
+        <ul class="pricing-features">
+          <li>5 URL audits/month</li>
+          <li>Basic dashboard</li>
+          <li>Meta tag generator</li>
+          <li>Sitemap generator</li>
+          <li class="no">Competitor analysis</li>
+          <li class="no">CSV export</li>
+          <li class="no">API access</li>
+        </ul>
+        <button class="btn-primary" style="width:100%;padding:0.65rem;">Get Started Free</button>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-badge">Most Popular</div>
+        <div class="pricing-name">Pro</div>
+        <div class="pricing-price">$49<span>/mo</span></div>
+        <div class="pricing-desc">For growing teams and agencies.</div>
+        <ul class="pricing-features">
+          <li>Unlimited URL audits</li>
+          <li>Full analytics dashboard</li>
+          <li>All SEO tools</li>
+          <li>Competitor analysis</li>
+          <li>CSV & PDF export</li>
+          <li>White-label reports</li>
+          <li class="no">API access</li>
+        </ul>
+        <button class="btn-primary" style="width:100%;padding:0.65rem;background:var(--emerald);" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='var(--emerald)'">Start Pro Trial</button>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-name">Enterprise</div>
+        <div class="pricing-price">$199<span>/mo</span></div>
+        <div class="pricing-desc">For large teams with advanced needs.</div>
+        <ul class="pricing-features">
+          <li>Everything in Pro</li>
+          <li>API access (1M req/mo)</li>
+          <li>Custom integrations</li>
+          <li>Dedicated support</li>
+          <li>SLA guarantee</li>
+          <li>SSO & SAML</li>
+          <li>Custom contracts</li>
+        </ul>
+        <button class="btn-primary" style="width:100%;padding:0.65rem;background:var(--surface2);color:var(--text);border:1px solid var(--border);" onmouseover="this.style.background='var(--surface)'" onmouseout="this.style.background='var(--surface2)'">Contact Sales</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ CONTACT ══════════════ -->
+<section id="contact" class="section">
+  <div class="container">
+    <div class="page-header">
+      <h1 class="page-title">Get in Touch</h1>
+      <p class="page-sub">We typically respond within 2 business hours</p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="contact-item">
+          <div class="contact-icon">📧</div>
+          <div><div class="contact-label">Email</div><div class="contact-val">hello@analytiq.io</div></div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">💬</div>
+          <div><div class="contact-label">Live Chat</div><div class="contact-val">Available Mon–Fri, 9–6 EST</div></div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">📍</div>
+          <div><div class="contact-label">Headquarters</div><div class="contact-val">San Francisco, CA 94105</div></div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">🐦</div>
+          <div><div class="contact-label">Twitter</div><div class="contact-val">@analytiq_io</div></div>
+        </div>
+        <div style="margin-top:1rem;padding:1rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);">
+          <div style="font-size:0.78rem;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.75rem;">System Status</div>
+          <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.83rem;"><span style="width:8px;height:8px;border-radius:50%;background:var(--emerald);display:inline-block;"></span>All systems operational</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Send a Message</span></div>
+        <div class="form-group"><label class="form-label">Name</label><input class="form-input" id="contactName" placeholder="Your name" oninput="validateContact()"></div>
+        <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="contactEmail" placeholder="you@company.com" oninput="validateContact()"></div>
+        <div class="form-group"><label class="form-label">Subject</label>
+          <select class="form-select" id="contactSubject">
+            <option value="">Select topic...</option>
+            <option>General inquiry</option>
+            <option>Technical support</option>
+            <option>Billing</option>
+            <option>Enterprise sales</option>
+            <option>Partnership</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" id="contactMsg" placeholder="How can we help?" style="min-height:120px;" oninput="validateContact()"></textarea></div>
+        <button class="btn-primary" id="contactSubmit" onclick="submitContact()" disabled style="padding:0.7rem 1.5rem;width:100%;opacity:0.5;transition:all 0.2s;">Send Message →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="footer-strip">
+  <span><span class="status-dot"></span>All systems operational · Analytiq v2.4</span>
+  <span style="font-family:var(--font-mono);">© 2024 Analytiq Inc.</span>
+</div>
+
+<script>
+// ── THEME ──
+let isDark = true;
+function toggleTheme() {
+  isDark = !isDark;
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  document.getElementById('themeBtn').textContent = isDark ? '🌙' : '☀️';
+  updateChartColors();
+}
+
+// ── NAV ──
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const navEl = document.getElementById('nav-' + id);
+  if (navEl) navEl.classList.add('active');
+  window.scrollTo(0, 0);
+  if (id === 'dashboard' && !chartsInitialized) initCharts();
+  if (id === 'tools') { generateMeta(); generateSchema(); generateSitemap(); generateRobots(); updateCWV(); }
+  if (id === 'reports') initReports();
+  if (id === 'competitor') { setTimeout(compareCompetitors, 100); }
+}
+
+function toggleMobileNav() {
+  const nl = document.getElementById('navLinks');
+  nl.style.display = nl.style.display === 'flex' ? 'none' : 'flex';
+  nl.style.flexDirection = 'column';
+  nl.style.position = 'absolute';
+  nl.style.top = '60px';
+  nl.style.left = '0';
+  nl.style.right = '0';
+  nl.style.background = 'var(--bg2)';
+  nl.style.padding = '1rem';
+  nl.style.borderBottom = '1px solid var(--border)';
+  nl.style.zIndex = '99';
+}
+
+// ── NOTIFICATION ──
+function notify(msg, icon = '✓') {
+  const n = document.getElementById('notif');
+  document.getElementById('notifText').textContent = msg;
+  document.getElementById('notifIcon').textContent = icon;
+  n.classList.add('show');
+  setTimeout(() => n.classList.remove('show'), 2800);
+}
+
+// ── COUNTER ANIMATION ──
+function animateCounter(el, target, suffix = '', prefix = '') {
+  let start = 0, duration = 1600, startTime = null;
+  function step(ts) {
+    if (!startTime) startTime = ts;
+    let progress = Math.min((ts - startTime) / duration, 1);
+    let ease = 1 - Math.pow(1 - progress, 3);
+    let val = Math.floor(ease * target);
+    el.textContent = prefix + val.toLocaleString() + suffix;
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+// Animate home stats
+setTimeout(() => {
+  animateCounter(document.getElementById('stat1'), 12847);
+  animateCounter(document.getElementById('stat2'), 94201);
+  animateCounter(document.getElementById('stat3'), 38590);
+  animateCounter(document.getElementById('stat4'), 34, 'pts');
+}, 400);
+
+// ── DATE RANGE ──
+let currentRange = '7d';
+function setRange(btn, range) {
+  document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentRange = range;
+  if (chartsInitialized) updateChartData();
+  animateDashboardKPIs();
+}
+
+// ── KPI ANIMATION ──
+function animateDashboardKPIs() {
+  const multipliers = { '7d': 1, '30d': 4.2, '90d': 11.8, '1y': 48 };
+  const m = multipliers[currentRange] || 1;
+  animateCounter(document.getElementById('kpi1'), Math.floor(38491 * m));
+  animateCounter(document.getElementById('kpi2'), Math.floor(4102 * m));
+  const kpi3 = document.getElementById('kpi3');
+  kpi3.textContent = (34.7 + (Math.random() * 4 - 2)).toFixed(1) + '%';
+  animateCounter(document.getElementById('kpi4'), Math.floor(52840 * m), '', '$');
+}
+
+// ── CHARTS ──
+let chartsInitialized = false;
+let charts = {};
+
+function getChartDefaults() {
+  return {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { labels: { color: isDark ? '#8a9bbf' : '#475569', font: { family: 'DM Mono', size: 11 }, boxWidth: 12, padding: 12 } } },
+    scales: {
+      x: { grid: { color: isDark ? '#1e2d45' : '#d0d9ee' }, ticks: { color: isDark ? '#4a5a78' : '#94a3b8', font: { family: 'DM Mono', size: 10 } } },
+      y: { grid: { color: isDark ? '#1e2d45' : '#d0d9ee' }, ticks: { color: isDark ? '#4a5a78' : '#94a3b8', font: { family: 'DM Mono', size: 10 } } }
+    }
+  };
+}
+
+function genLabels(n, range) {
+  const labels = [];
+  for (let i = n - 1; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i * (range === '7d' ? 1 : range === '30d' ? 1 : range === '90d' ? 3 : 15));
+    labels.push(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+  }
+  return labels;
+}
+
+function genData(min, max, n) {
+  return Array.from({ length: n }, () => Math.floor(Math.random() * (max - min) + min));
+}
+
+function initCharts() {
+  chartsInitialized = true;
+  const n = currentRange === '7d' ? 7 : currentRange === '30d' ? 30 : currentRange === '90d' ? 30 : 24;
+  const labels = genLabels(n, currentRange);
+  const defaults = getChartDefaults();
+
+  const grad = (ctx, c1, c2) => {
+    const g = ctx.createLinearGradient(0, 0, 0, 220);
+    g.addColorStop(0, c1); g.addColorStop(1, c2);
+    return g;
+  };
+
+  // Traffic
+  const tc = document.getElementById('trafficChart').getContext('2d');
+  charts.traffic = new Chart(tc, {
+    type: 'line', data: {
+      labels,
+      datasets: [{
+        label: 'Sessions', data: genData(2000, 8000, n),
+        borderColor: '#6366f1', borderWidth: 2,
+        backgroundColor: (ctx) => grad(ctx.chart.ctx, 'rgba(99,102,241,0.2)', 'rgba(99,102,241,0.0)'),
+        fill: true, tension: 0.4, pointRadius: 2, pointHoverRadius: 5
+      }, {
+        label: 'Users', data: genData(1500, 6500, n),
+        borderColor: '#10b981', borderWidth: 2,
+        backgroundColor: 'transparent', tension: 0.4, pointRadius: 2, pointHoverRadius: 5
+      }]
+    }, options: defaults
+  });
+
+  // Funnel (bar)
+  const fc = document.getElementById('funnelChart').getContext('2d');
+  charts.funnel = new Chart(fc, {
+    type: 'bar', data: {
+      labels: ['Visitors', 'Engaged', 'Leads', 'Trials', 'Customers'],
+      datasets: [{ label: 'Users', data: [38491, 24018, 8420, 2843, 1201], backgroundColor: ['#6366f1','#4f46e5','#3730a3','#10b981','#059669'], borderRadius: 6 }]
+    }, options: { ...defaults, plugins: { legend: { display: false } } }
+  });
+
+  // Source (doughnut)
+  const sc = document.getElementById('sourceChart').getContext('2d');
+  charts.source = new Chart(sc, {
+    type: 'doughnut', data: {
+      labels: ['Organic', 'Direct', 'Social', 'Referral', 'Email', 'Paid'],
+      datasets: [{ data: [38, 24, 16, 10, 8, 4], backgroundColor: ['#6366f1','#10b981','#06b6d4','#f59e0b','#f43f5e','#8b5cf6'], borderWidth: 0, hoverOffset: 6 }]
+    }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: isDark ? '#8a9bbf' : '#475569', font: { family: 'DM Mono', size: 10 }, boxWidth: 10, padding: 8 } } } }
+  });
+
+  // Revenue
+  const rc = document.getElementById('revenueChart').getContext('2d');
+  charts.revenue = new Chart(rc, {
+    type: 'line', data: {
+      labels,
+      datasets: [{
+        label: 'Revenue ($)', data: genData(3000, 18000, n),
+        borderColor: '#10b981', borderWidth: 2,
+        backgroundColor: (ctx) => grad(ctx.chart.ctx, 'rgba(16,185,129,0.2)', 'rgba(16,185,129,0.0)'),
+        fill: true, tension: 0.4, pointRadius: 2, pointHoverRadius: 5
+      }]
+    }, options: { ...defaults, plugins: { ...defaults.plugins, tooltip: { callbacks: { label: (c) => ' $' + c.raw.toLocaleString() } } } }
+  });
+
+  // Pages table
+  const pages = [
+    ['/','Home',12847,32.1,'2:34',401],
+    ['/blog/seo-guide','SEO Guide',8201,28.4,'4:12',298],
+    ['/pricing','Pricing',6103,41.2,'1:58',521],
+    ['/features','Features',4891,35.7,'2:41',187],
+    ['/contact','Contact',2841,22.8,'3:14',342]
+  ];
+  document.getElementById('pagesTable').innerHTML = pages.map(([slug,name,sess,bounce,time,conv]) =>
+    `<tr><td><span style="font-family:var(--font-mono);font-size:0.75rem;color:var(--text2);">${slug}</span><br><span style="font-size:0.8rem;">${name}</span></td><td style="font-family:var(--font-mono);">${sess.toLocaleString()}</td><td style="font-family:var(--font-mono);color:${bounce > 40 ? 'var(--rose)' : 'var(--emerald)'};">${bounce}%</td><td style="font-family:var(--font-mono);">${time}</td><td style="font-family:var(--font-mono);color:var(--emerald);">${conv}</td></tr>`
+  ).join('');
+
+  animateDashboardKPIs();
+}
+
+function updateChartData() {
+  if (!charts.traffic) return;
+  const n = currentRange === '7d' ? 7 : currentRange === '30d' ? 30 : 30;
+  const labels = genLabels(n, currentRange);
+  ['traffic', 'revenue'].forEach(k => {
+    if (!charts[k]) return;
+    charts[k].data.labels = labels;
+    charts[k].data.datasets.forEach(ds => { ds.data = genData(ds.data[0] * 0.7, ds.data[0] * 1.3, n); });
+    charts[k].update();
+  });
+}
+
+function updateChartColors() {
+  Object.values(charts).forEach(c => {
+    if (c.options.scales) {
+      Object.values(c.options.scales).forEach(s => {
+        s.grid && (s.grid.color = isDark ? '#1e2d45' : '#d0d9ee');
+        s.ticks && (s.ticks.color = isDark ? '#4a5a78' : '#94a3b8');
+      });
+    }
+    c.update();
+  });
+}
+
+// ── CSV DRAG & DROP ──
+function handleDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+function handleDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+function handleDrop(e) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file && file.name.endsWith('.csv')) {
+    notify('📂 CSV loaded: ' + file.name);
+    const reader = new FileReader();
+    reader.onload = () => { notify('✓ Data imported successfully!'); };
+    reader.readAsText(file);
+  } else { notify('⚠ Please drop a valid .csv file', '⚠'); }
+}
+
+// ── EXPORT ──
+function exportCSV() {
+  const csv = 'Date,Sessions,Users,BounceRate,Revenue\n2024-01-01,3842,2901,34.2,8420\n2024-01-02,4102,3101,33.1,9180';
+  const a = document.createElement('a');
+  a.href = 'data:text/csv,' + encodeURIComponent(csv);
+  a.download = 'analytiq-export.csv';
+  a.click();
+  notify('✓ CSV exported!');
+}
+function exportPDF() { notify('📄 Generating PDF report...', '📄'); setTimeout(() => notify('✓ PDF ready for download!'), 1500); }
+
+// ── SEO AUDIT ──
+let auditTimeout;
+function runAudit() {
+  const url = document.getElementById('auditUrl').value;
+  if (!url) { notify('⚠ Please enter a URL', '⚠'); return; }
+  const btn = document.getElementById('auditBtn');
+  btn.disabled = true; btn.textContent = 'Analyzing...';
+  document.getElementById('auditResult').classList.remove('active');
+  document.getElementById('auditLoader').classList.add('active');
+
+  const loadTexts = ['Crawling page structure...', 'Parsing meta tags...', 'Measuring load speed...', 'Analyzing keywords...', 'Generating scores...'];
+  let li = 0;
+  const loaderText = document.querySelector('.loader-text');
+  const loaderInterval = setInterval(() => { loaderText.textContent = loadTexts[li++ % loadTexts.length]; }, 600);
+
+  setTimeout(() => {
+    clearInterval(loaderInterval);
+    document.getElementById('auditLoader').classList.remove('active');
+    btn.disabled = false; btn.textContent = '🔍 Analyze';
+    showAuditResults(url);
+  }, 3200);
+}
+
+function showAuditResults(url) {
+  const domain = url.replace(/https?:\/\//, '').split('/')[0];
+  const score = Math.floor(Math.random() * 25 + 70);
+  const perf = Math.floor(Math.random() * 20 + 72);
+  const seo = Math.floor(Math.random() * 15 + 80);
+  const access = Math.floor(Math.random() * 20 + 75);
+  const bp = Math.floor(Math.random() * 15 + 82);
+
+  // Ring
+  const circumference = 326.7;
+  const offset = circumference - (score / 100) * circumference;
+  const ring = document.getElementById('ringFill');
+  ring.style.strokeDashoffset = circumference;
+  ring.style.stroke = score >= 90 ? '#10b981' : score >= 70 ? '#f59e0b' : '#f43f5e';
+  setTimeout(() => { ring.style.strokeDashoffset = offset; }, 100);
+
+  const numEl = document.getElementById('overallScore');
+  let cur = 0;
+  const numTimer = setInterval(() => { cur = Math.min(cur + 2, score); numEl.textContent = cur; if (cur >= score) clearInterval(numTimer); }, 30);
+
+  const scoreColor = s => s >= 90 ? 'color-good' : s >= 70 ? 'color-warn' : 'color-bad';
+  document.getElementById('auditScores').innerHTML = [
+    ['Performance', perf], ['SEO', seo], ['Accessibility', access], ['Best Practices', bp]
+  ].map(([label, val]) => `<div class="score-card"><div class="score-card-val ${scoreColor(val)}">${val}</div><div class="score-card-lbl">${label}</div></div>`).join('');
+
+  document.getElementById('auditSummary').textContent = `Analyzed ${url} · Found ${100 - score} optimization opportunities. Focus on improving Core Web Vitals and structured data to boost rankings.`;
+
+  // Checklist
+  const checks = [
+    ['pass', '✓', 'Title tag present', `${domain.split('.')[0]} — Analytics Platform`],
+    [seo >= 85 ? 'pass' : 'warn', seo >= 85 ? '✓' : '⚠', 'Meta description', seo >= 85 ? 'Good length (156 chars)' : 'Too short — add more context'],
+    ['pass', '✓', 'Canonical URL set', url],
+    [perf >= 80 ? 'pass' : 'fail', perf >= 80 ? '✓' : '✗', 'LCP < 2.5s', perf >= 80 ? '1.8s — Good' : '3.2s — Needs improvement'],
+    ['warn', '⚠', 'CLS score', '0.12 — Slightly high, check font loading'],
+    [bp >= 85 ? 'pass' : 'warn', bp >= 85 ? '✓' : '⚠', 'HTTPS enabled', 'SSL certificate valid'],
+    ['pass', '✓', 'Mobile-friendly', 'Responsive design detected'],
+    ['pass', '✓', 'Open Graph tags', 'og:title, og:description, og:image found'],
+    [seo >= 80 ? 'pass' : 'fail', seo >= 80 ? '✓' : '✗', 'Structured data', seo >= 80 ? 'JSON-LD detected' : 'No structured data found'],
+    ['warn', '⚠', 'Image alt texts', '3 images missing alt attribute'],
+    ['pass', '✓', 'Sitemap.xml', 'Found at /sitemap.xml'],
+    ['pass', '✓', 'Robots.txt', 'Properly configured'],
+    [access >= 80 ? 'pass' : 'fail', access >= 80 ? '✓' : '✗', 'ARIA labels', access >= 80 ? 'Present on interactive elements' : 'Missing on several elements'],
+    ['pass', '✓', 'H1 tag unique', 'One H1 found on page'],
+    ['warn', '⚠', 'Internal links', 'Only 4 internal links — add more for SEO'],
+  ];
+
+  document.getElementById('auditChecklist').innerHTML = checks.map(([cls, icon, title, val]) =>
+    `<div class="check-item ${cls}"><span class="check-icon">${icon}</span><span class="check-title">${title}</span><span class="check-val">${val}</span></div>`
+  ).join('');
+
+  // Keywords
+  const kws = [['analytics', 18, 2.4], ['dashboard', 14, 1.9], ['seo', 12, 1.6], ['data', 11, 1.5], ['insights', 8, 1.1], ['metrics', 7, 0.9], ['performance', 6, 0.8]];
+  document.querySelector('#kwTable tbody').innerHTML = kws.map(([kw, cnt, dens]) =>
+    `<tr><td style="font-family:var(--font-mono);">${kw}</td><td>${cnt}</td><td style="color:${dens > 2 ? 'var(--rose)' : dens > 1 ? 'var(--emerald)' : 'var(--amber)'};">${dens}%</td><td><div class="kw-bar"><div class="kw-bar-inner" style="width:${Math.min(dens * 40, 100)}px;"></div></div></td></tr>`
+  ).join('');
+
+  // SERP
+  document.getElementById('serpUrl').textContent = url;
+  document.getElementById('serpTitle').textContent = `${domain.charAt(0).toUpperCase() + domain.slice(1)} — Analytics Dashboard & SEO Toolkit`;
+  document.getElementById('serpDesc').textContent = `Professional digital analytics and SEO optimization platform. Track real-time traffic, run SEO audits, and get actionable insights for your business.`;
+  document.getElementById('metaDetails').innerHTML = [
+    ['Title length', '58 chars ✓'],
+    ['Description length', '156 chars ✓'],
+    ['Robots', 'index, follow'],
+    ['hreflang', 'en (set)'],
+    ['og:image', 'Present'],
+    ['Twitter card', 'summary_large_image'],
+  ].map(([k, v]) => `<div style="display:flex;justify-content:space-between;padding:0.4rem 0;border-bottom:1px solid var(--border);font-size:0.8rem;"><span style="color:var(--text2);">${k}</span><span style="font-family:var(--font-mono);">${v}</span></div>`).join('');
+
+  document.getElementById('auditResult').classList.add('active');
+}
+
+function switchAuditTab(btn, id) {
+  document.querySelectorAll('#auditResult .tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('#auditResult .tab-content').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+
+// ── COMPETITOR ──
+let compChart = null;
+function compareCompetitors() {
+  const d1 = document.getElementById('domain1').value || 'analytiq.io';
+  const d2 = document.getElementById('domain2').value || 'competitor.com';
+  const gen = (base) => ({
+    da: Math.floor(Math.random() * 40 + base),
+    traffic: Math.floor(Math.random() * 50000 + base * 1000),
+    backlinks: Math.floor(Math.random() * 5000 + base * 100),
+    keywords: Math.floor(Math.random() * 1000 + base * 20),
+    speed: (Math.random() * 2 + 1.2).toFixed(1),
+    dr: Math.floor(Math.random() * 30 + base)
+  });
+  const m1 = gen(30), m2 = gen(55);
+
+  document.getElementById('compResults').style.display = 'grid';
+  document.getElementById('compChartWrap').style.display = 'block';
+
+  const renderCard = (card, domain, m, color) => {
+    card.innerHTML = `
+      <div class="comp-header" style="color:${color};">🌐 ${domain}</div>
+      ${[
+        ['Domain Authority', m.da + '/100', m.da],
+        ['Monthly Traffic', m.traffic.toLocaleString(), m.traffic / 1000],
+        ['Backlinks', m.backlinks.toLocaleString(), m.backlinks / 50],
+        ['Ranking Keywords', m.keywords.toLocaleString(), m.keywords / 10],
+        ['Page Speed', m.speed + 's', Math.max(0, 100 - m.speed * 20)],
+        ['Domain Rating', m.dr + '/100', m.dr],
+      ].map(([name, val, pct]) => `
+        <div class="metric-row">
+          <div><div class="metric-name">${name}</div><div class="progress-bar"><div class="progress-fill" style="width:${Math.min(pct, 100)}%;background:${color};"></div></div></div>
+          <div class="metric-val">${val}</div>
+        </div>`).join('')}`;
+  };
+
+  renderCard(document.getElementById('compCard1'), d1, m1, '#6366f1');
+  renderCard(document.getElementById('compCard2'), d2, m2, '#10b981');
+
+  if (compChart) { compChart.destroy(); }
+  const ctx = document.getElementById('compChart').getContext('2d');
+  compChart = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: ['Authority', 'Traffic', 'Backlinks', 'Keywords', 'Speed', 'Engagement'],
+      datasets: [
+        { label: d1, data: [m1.da, Math.min(m1.traffic/1000, 100), Math.min(m1.backlinks/50, 100), Math.min(m1.keywords/10, 100), Math.max(0, 100 - m1.speed*20), Math.floor(Math.random()*30+50)], borderColor: '#6366f1', backgroundColor: 'rgba(99,102,241,0.15)', borderWidth: 2, pointRadius: 4 },
+        { label: d2, data: [m2.da, Math.min(m2.traffic/1000, 100), Math.min(m2.backlinks/50, 100), Math.min(m2.keywords/10, 100), Math.max(0, 100 - m2.speed*20), Math.floor(Math.random()*30+55)], borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.15)', borderWidth: 2, pointRadius: 4 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: { r: { grid: { color: isDark ? '#1e2d45' : '#d0d9ee' }, angleLines: { color: isDark ? '#1e2d45' : '#d0d9ee' }, ticks: { color: isDark ? '#4a5a78' : '#94a3b8', font: { family: 'DM Mono', size: 9 }, backdropColor: 'transparent' }, pointLabels: { color: isDark ? '#8a9bbf' : '#475569', font: { family: 'DM Mono', size: 11 } } } },
+      plugins: { legend: { labels: { color: isDark ? '#8a9bbf' : '#475569', font: { family: 'DM Mono', size: 11 }, boxWidth: 12 } } }
+    }
+  });
+}
+
+// ── TOOL TABS ──
+function switchToolTab(btn, id) {
+  document.querySelectorAll('#tools .tabs .tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('#tools .tab-content').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+  if (id === 'tool-cwv') updateCWV();
+  if (id === 'tool-sitemap') generateSitemap();
+  if (id === 'tool-robots') generateRobots();
+  if (id === 'tool-schema') generateSchema();
+}
+
+// ── META GENERATOR ──
+function generateMeta() {
+  const title = document.getElementById('mtTitle').value || 'Page Title';
+  const desc = document.getElementById('mtDesc').value || '';
+  const kw = document.getElementById('mtKeywords').value || '';
+  const canon = document.getElementById('mtCanonical').value || '';
+  const ogImg = document.getElementById('mtOgImage').value || '';
+  const robots = document.getElementById('mtRobots').value;
+  const descEl = document.getElementById('descCount');
+  descEl.textContent = `${desc.length} / 160 chars`;
+  descEl.style.color = desc.length > 160 ? 'var(--rose)' : desc.length > 140 ? 'var(--emerald)' : 'var(--text3)';
+
+  const out = `<!-- Primary Meta Tags -->
+<title>${title}</title>
+<meta name="title" content="${title}">
+<meta name="description" content="${desc}">
+${kw ? `<meta name="keywords" content="${kw}">` : ''}
+<meta name="robots" content="${robots}">
+${canon ? `<link rel="canonical" href="${canon}">` : ''}
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="${title}">
+<meta property="og:description" content="${desc}">
+${canon ? `<meta property="og:url" content="${canon}">` : ''}
+${ogImg ? `<meta property="og:image" content="${ogImg}">` : ''}
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${title}">
+<meta name="twitter:description" content="${desc}">
+${ogImg ? `<meta name="twitter:image" content="${ogImg}">` : ''}`;
+  document.getElementById('metaOutput').textContent = out;
+
+  const tLen = title.length;
+  document.getElementById('metaPreview').innerHTML = `<span style="color:${tLen>60?'var(--rose)':'var(--emerald)'}">● Title: ${tLen} chars${tLen>60?' (too long — trim to 60)':' ✓'}</span>\n<span style="color:${desc.length>160?'var(--rose)':desc.length>140?'var(--emerald)':'var(--amber)'}">● Description: ${desc.length} chars${desc.length>160?' (too long)':desc.length>140?' ✓':' (add more)'}</span>\n<span style="color:var(--text2)">● Keywords: ${kw.split(',').filter(Boolean).length} terms</span>`;
+}
+
+// ── SCHEMA GENERATOR ──
+function generateSchema() {
+  const type = document.getElementById('schemaType').value;
+  const name = document.getElementById('schemaName').value || 'My Organization';
+  const url = document.getElementById('schemaUrl').value || 'https://example.com';
+  const desc = document.getElementById('schemaDesc').value || 'Description here.';
+  let schema = { '@context': 'https://schema.org', '@type': type, name, url, description: desc };
+  if (type === 'Organization') { schema.sameAs = ['https://twitter.com/example', 'https://linkedin.com/company/example']; schema.logo = url + '/logo.png'; }
+  if (type === 'FAQPage') { schema.mainEntity = [{ '@type': 'Question', name: 'What is ' + name + '?', acceptedAnswer: { '@type': 'Answer', text: desc } }]; }
+  if (type === 'Product') { schema.offers = { '@type': 'Offer', price: '0', priceCurrency: 'USD', availability: 'https://schema.org/InStock' }; }
+  document.getElementById('schemaOutput').textContent = `<script type="application/ld+json">\n${JSON.stringify(schema, null, 2)}\n<\/script>`;
+}
+
+// ── SITEMAP GENERATOR ──
+function generateSitemap() {
+  const domain = document.getElementById('sitemapDomain').value || 'https://example.com';
+  const pages = document.getElementById('sitemapPages').value.split('\n').filter(p => p.trim());
+  const freq = document.getElementById('sitemapFreq').value;
+  const today = new Date().toISOString().split('T')[0];
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${pages.map((p, i) => `  <url>
+    <loc>${domain}${p.trim()}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${freq}</changefreq>
+    <priority>${i === 0 ? '1.0' : '0.8'}</priority>
+  </url>`).join('\n')}
+</urlset>`;
+  document.getElementById('sitemapOutput').textContent = xml;
+}
+
+// ── ROBOTS GENERATOR ──
+function generateRobots() {
+  const agent = document.getElementById('robotsAgent').value;
+  const disallow = document.getElementById('robotsDisallow').value.split('\n').filter(p => p.trim());
+  const sitemap = document.getElementById('robotsSitemap').value;
+  const delay = document.getElementById('robotsCrawlDelay').checked;
+  let txt = `User-agent: ${agent}\n`;
+  disallow.forEach(p => { txt += `Disallow: ${p.trim()}\n`; });
+  txt += `Allow: /\n`;
+  if (delay) txt += `Crawl-delay: 1\n`;
+  if (sitemap) txt += `\nSitemap: ${sitemap}`;
+  document.getElementById('robotsOutput').textContent = txt;
+}
+
+// ── CORE WEB VITALS ──
+function updateCWV() {
+  const lcp = parseFloat(document.getElementById('lcpSlider').value);
+  const fid = parseInt(document.getElementById('fidSlider').value);
+  const cls = parseFloat(document.getElementById('clsSlider').value);
+  const ttfb = parseInt(document.getElementById('ttfbSlider').value);
+
+  const lcpGood = lcp <= 2.5, lcpOk = lcp <= 4;
+  const fidGood = fid <= 100, fidOk = fid <= 300;
+  const clsGood = cls <= 0.1, clsOk = cls <= 0.25;
+  const ttfbGood = ttfb <= 200, ttfbOk = ttfb <= 500;
+
+  document.getElementById('lcpVal').textContent = lcp.toFixed(1) + 's';
+  document.getElementById('fidVal').textContent = fid + 'ms';
+  document.getElementById('clsVal').textContent = cls.toFixed(2);
+  document.getElementById('ttfbVal').textContent = ttfb + 'ms';
+
+  const status = (good, ok) => good ? `<span class="color-good">● Good</span>` : ok ? `<span class="color-warn">● Needs Improvement</span>` : `<span class="color-bad">● Poor</span>`;
+  document.getElementById('lcpStatus').innerHTML = status(lcpGood, lcpOk);
+  document.getElementById('fidStatus').innerHTML = status(fidGood, fidOk);
+  document.getElementById('clsStatus').innerHTML = status(clsGood, clsOk);
+  document.getElementById('ttfbStatus').innerHTML = status(ttfbGood, ttfbOk);
+
+  const passed = [lcpGood, fidGood, clsGood, ttfbGood].filter(Boolean).length;
+  const perfScore = Math.round((lcpGood ? 30 : lcpOk ? 15 : 0) + (fidGood ? 25 : fidOk ? 12 : 0) + (clsGood ? 25 : clsOk ? 12 : 0) + (ttfbGood ? 20 : ttfbOk ? 10 : 0));
+
+  document.getElementById('cwvScores').innerHTML = [
+    ['Performance', perfScore, perfScore >= 70 ? 'color-good' : perfScore >= 50 ? 'color-warn' : 'color-bad'],
+    ['LCP', lcpGood ? 'GOOD' : lcpOk ? 'FAIR' : 'POOR', lcpGood ? 'color-good' : lcpOk ? 'color-warn' : 'color-bad'],
+    ['FID', fidGood ? 'GOOD' : fidOk ? 'FAIR' : 'POOR', fidGood ? 'color-good' : fidOk ? 'color-warn' : 'color-bad'],
+    ['CLS', clsGood ? 'GOOD' : clsOk ? 'FAIR' : 'POOR', clsGood ? 'color-good' : clsOk ? 'color-warn' : 'color-bad'],
+    ['TTFB', ttfbGood ? 'GOOD' : ttfbOk ? 'FAIR' : 'POOR', ttfbGood ? 'color-good' : ttfbOk ? 'color-warn' : 'color-bad'],
+  ].map(([l, v, cls]) => `<div class="score-card"><div class="score-card-val ${cls}">${v}</div><div class="score-card-lbl">${l}</div></div>`).join('');
+
+  const recs = [];
+  if (!lcpGood) recs.push(`→ LCP ${lcp}s: Optimize images, use lazy loading, preload key resources`);
+  if (!fidGood) recs.push(`→ FID ${fid}ms: Split long tasks, defer non-critical JS`);
+  if (!clsGood) recs.push(`→ CLS ${cls}: Set size attributes on images/videos, avoid injecting content`);
+  if (!ttfbGood) recs.push(`→ TTFB ${ttfb}ms: Use CDN, optimize server response, enable caching`);
+  if (recs.length === 0) recs.push('✓ All Core Web Vitals are within good thresholds!');
+  document.getElementById('cwvRecommendations').innerHTML = recs.join('\n');
+}
+
+// ── COPY ──
+function copyOutput(id, btn) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!'; btn.classList.add('copied');
+    notify('✓ Copied to clipboard!');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// ── REPORTS ──
+function initReports() {
+  const reports = [
+    { icon: '📊', color: 'fi-indigo', title: 'Monthly SEO Performance', desc: 'Organic traffic trends, keyword rankings, and backlink growth over the past 30 days.', date: 'Updated today', pages: 12 },
+    { icon: '🎯', color: 'fi-emerald', title: 'Conversion Funnel Analysis', desc: 'Full funnel breakdown from acquisition through conversion with drop-off analysis.', date: 'Updated yesterday', pages: 8 },
+    { icon: '⚔️', color: 'fi-amber', title: 'Competitor Landscape Report', desc: 'Side-by-side comparison with top 5 competitors across 24 key metrics.', date: '3 days ago', pages: 18 },
+    { icon: '🔍', color: 'fi-rose', title: 'Technical SEO Audit', desc: 'Full site crawl results with prioritized fixes and implementation guides.', date: 'Last week', pages: 24 },
+    { icon: '📈', color: 'fi-indigo', title: 'Traffic Source Attribution', desc: 'Multi-touch attribution analysis across organic, paid, social, and email channels.', date: '2 weeks ago', pages: 10 },
+    { icon: '⚡', color: 'fi-emerald', title: 'Core Web Vitals Report', desc: 'Field data and lab data for all pages with specific optimization recommendations.', date: 'Last month', pages: 6 },
+  ];
+  document.getElementById('reportGrid').innerHTML = reports.map(r => `
+    <div class="report-card">
+      <div class="report-icon ${r.color}">${r.icon}</div>
+      <div class="report-title">${r.title}</div>
+      <div class="report-desc">${r.desc}</div>
+      <div class="report-meta">📄 ${r.pages} pages · ${r.date}</div>
+      <div class="report-actions">
+        <button class="btn-sm" onclick="notify('👁 Opening preview...','👁')">Preview</button>
+        <button class="btn-sm primary" onclick="notify('⬇ Downloading PDF...','⬇')">Download PDF</button>
+      </div>
+    </div>`).join('');
+}
+
+// ── CONTACT VALIDATION ──
+function validateContact() {
+  const name = document.getElementById('contactName').value;
+  const email = document.getElementById('contactEmail').value;
+  const msg = document.getElementById('contactMsg').value;
+  const valid = name.length > 1 && /\S+@\S+\.\S+/.test(email) && msg.length > 10;
+  const btn = document.getElementById('contactSubmit');
+  btn.disabled = !valid; btn.style.opacity = valid ? '1' : '0.5';
+}
+
+function submitContact() {
+  notify('✓ Message sent! We\'ll reply within 2 hours.');
+  ['contactName','contactEmail','contactMsg'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('contactSubject').selectedIndex = 0;
+  document.getElementById('contactSubmit').disabled = true;
+  document.getElementById('contactSubmit').style.opacity = '0.5';
+}
+
+// ── INIT ──
+window.addEventListener('load', () => {
+  generateMeta();
+  generateSitemap();
+  generateRobots();
+  generateSchema();
+});
+</script>
+</body>
+</html>
